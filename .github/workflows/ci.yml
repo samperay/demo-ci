@@ -62,10 +62,16 @@ jobs:
       - name: Update image tag in manifests
         run: |
           TAG=${{ steps.build.outputs.tag }}
-          FILE="manifests/apps/poc/deployment.yaml"
-          sed -i "s|image: .*|image: $IMAGE_NAME:$TAG|g" "$FILE"
+					FILE_WS="manifests/apps/poc/deployment.yaml"
+					FILE_GIT="apps/poc/deployment.yaml"
+					echo "Workspace path:" $FILE_WS
+					echo "Git path:" $FILE_GIT
+					ls -la manifests/apps/poc
+
+          sed -i "s|image: .*|image: $IMAGE_NAME:$TAG|g" "$FILE_WS"
+
           git -C manifests config user.name "github-actions"
           git -C manifests config user.email "github-actions@users.noreply.github.com"
-          git -C manifests add "$FILE"
-          git -C manifests commit -m "Update image to $TAG"
+          git -C manifests add "$FILE_GIT"
+          git -C manifests commit -m "Update image to $TAG" || echo "Nochanges to commit"
           git -C manifests push
