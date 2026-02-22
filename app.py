@@ -3,4 +3,4 @@ app = Flask(__name__)
 
 @app.get("/")
 def hello():
-    return "If you are seeing this message, then its means entire CICD flow is successful.. thank you .. visit again...\n"
+    return "If you are seeing this message, then its means entire CI/CD POC flow is successful.. thank you .. visit again...\n"
