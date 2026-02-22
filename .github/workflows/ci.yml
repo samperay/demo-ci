@@ -46,7 +46,7 @@ jobs:
       - name: Checkout manifests repo
         uses: actions/checkout@v4
         with:
-          repository: <YOUR_GH_ORG_OR_USER>/manifests-repo
+          repository: samperay/manifests-repo
           token: ${{ secrets.MANIFESTS_REPO_PAT }}
           path: manifests
 
