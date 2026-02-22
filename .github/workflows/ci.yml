@@ -53,6 +53,7 @@ jobs:
       - name: Debug manifests tree
         run: |
           echo "Listing manifests repo..."
+					echo "pwd: $(pwd)"
           ls -la manifests
           echo "Searching for deployment.yaml..."
           find manifests -maxdepth 5 -type f -name "deployment.yaml" -print
@@ -62,7 +63,7 @@ jobs:
       - name: Update image tag in manifests
         run: |
           TAG=${{ steps.build.outputs.tag }}
-          FILE="apps/poc/deployment.yaml"
+          FILE="manifests/manifests/apps/poc/deployment.yaml"
           sed -i "s|image: .*|image: $IMAGE_NAME:$TAG|g" "$FILE"
           git -C manifests config user.name "github-actions"
           git -C manifests config user.email "github-actions@users.noreply.github.com"
