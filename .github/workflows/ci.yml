@@ -50,6 +50,15 @@ jobs:
           token: ${{ secrets.MANIFESTS_REPO_PAT }}
           path: manifests
 
+      - name: Debug manifests tree
+        run: |
+          echo "Listing manifests repo..."
+          ls -la manifests
+          echo "Searching for deployment.yaml..."
+          find manifests -maxdepth 5 -type f -name "deployment.yaml" -print
+          echo "Searching for any yaml with 'kind: Deployment'..."
+          grep -R --line-number "kind: Deployment" manifests | head -n 50
+
       - name: Update image tag in manifests
         run: |
           TAG=${{ steps.build.outputs.tag }}
