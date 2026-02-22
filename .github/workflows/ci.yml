@@ -46,7 +46,7 @@ jobs:
       - name: Checkout manifests repo
         uses: actions/checkout@v4
         with:
-          repository: samperay/manifests-repo
+          repository: samperay/demo-ci
           token: ${{ secrets.MANIFESTS_REPO_PAT }}
           path: manifests
 
