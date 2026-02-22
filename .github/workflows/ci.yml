@@ -53,7 +53,6 @@ jobs:
       - name: Debug manifests tree
         run: |
           echo "Listing manifests repo..."
-					pwd
           ls -la manifests
           echo "Searching for deployment.yaml..."
           find manifests -maxdepth 5 -type f -name "deployment.yaml" -print
