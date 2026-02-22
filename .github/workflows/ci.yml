@@ -62,7 +62,7 @@ jobs:
       - name: Update image tag in manifests
         run: |
           TAG=${{ steps.build.outputs.tag }}
-          FILE="manifests/manifests/apps/poc/deployment.yaml"
+          FILE="manifests/apps/poc/deployment.yaml"
           sed -i "s|image: .*|image: $IMAGE_NAME:$TAG|g" "$FILE"
           git -C manifests config user.name "github-actions"
           git -C manifests config user.email "github-actions@users.noreply.github.com"
