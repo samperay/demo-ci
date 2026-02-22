@@ -1,0 +1,61 @@
+name: CI - test, build, push, update manifests
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/cicd-poc-app
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout app repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pytest
+
+      - name: Run tests
+        run: pytest -q
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build and push image
+        id: build
+        run: |
+          TAG=${{ github.sha }}
+          docker build -t $IMAGE_NAME:$TAG .
+          docker push $IMAGE_NAME:$TAG
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Checkout manifests repo
+        uses: actions/checkout@v4
+        with:
+          repository: <YOUR_GH_ORG_OR_USER>/manifests-repo
+          token: ${{ secrets.MANIFESTS_REPO_PAT }}
+          path: manifests
+
+      - name: Update image tag in manifests
+        run: |
+          TAG=${{ steps.build.outputs.tag }}
+          FILE="manifests/apps/poc/deployment.yaml"
+          sed -i "s|image: .*|image: $IMAGE_NAME:$TAG|g" "$FILE"
+          git -C manifests config user.name "github-actions"
+          git -C manifests config user.email "github-actions@users.noreply.github.com"
+          git -C manifests add "$FILE"
+          git -C manifests commit -m "Update image to $TAG"
+          git -C manifests push
