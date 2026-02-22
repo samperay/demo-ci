@@ -3,4 +3,4 @@ app = Flask(__name__)
 
 @app.get("/")
 def hello():
-    return "Hello from CI/CD POC!\n"
+    return "Hello from CI/CD POC!!\n"
